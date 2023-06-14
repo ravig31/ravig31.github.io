@@ -136,9 +136,10 @@ nav{
 /* About Me */
 
 #about-me{
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
+    margin-bottom: 100px;
 }
 
 .about-me_info{
@@ -207,6 +208,8 @@ nav{
 
 .pic_of_me{
     width: 100%;
+    margin: 0;
+    transform: translate(0%, -25%);
     
 }
 
@@ -247,20 +250,7 @@ nav{
     }
 }
 
-.about-me_img--container{
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
 
-.about-me_img{
-    width: 100%;
-}
-
-.wave{
-    display: inline-block;
-    animation: animate-wave 500ms infinite ease-in-out
-}
 
 @keyframes animate-wave{
     0%{
@@ -275,23 +265,8 @@ nav{
     }
 }
 
-/* QUOTE */
 
-.quote{
-    text-align: center;
-    margin-top: calc(100%/2.5);
-    animation: fade-in 1s ease-out both;;
-}
 
-.quote--para{
-    font-weight: 700;
-    font-size: 48px;
-}
-
-.author{
-    white-space: nowrap;
-    font-size: 36px;
-}
 
 @keyframes fade-in {
     0% {
