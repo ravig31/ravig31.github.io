@@ -8,7 +8,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
 	configuration: {
-		pageTitle: "ravig31.github.io",
+		pageTitle: "ravig31",
 		pageTitleSuffix: "ravig31",
 		enableSPA: true,
 		enablePopovers: true,

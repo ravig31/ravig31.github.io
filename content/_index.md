@@ -1,10 +1,10 @@
 ---
-title: Hellooooo 
+title: Helloo
 ---
 ![](images/Gemini_Generated_Image_bvpnpqbvpnpqbvpn.png)
 
 
-Hey, welcome to this blog where I will `occasionally` write something interesting.
+Welcome to this blog where I will `occasionally` write something interesting.
 
 This is more a place for me to document and formalise things I learn as I am a big believer in this process. I urge everyone to do so as well :)
 
