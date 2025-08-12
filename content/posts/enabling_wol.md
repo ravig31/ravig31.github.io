@@ -2,7 +2,8 @@
 title: Enabling Wake-on-Lan (and WAN) on Ubuntu 24.04
 ---
 
-For lot of the projects I do I need a dedicated Linux environment to use tools like `perf`. But personally daily driving Ubuntu is not really suitable for me and I enjoy using Apple Silicon Mac too much. The only problem was figuring out how to wake up my  Linux machine when I wasn't home, as I didn't want to leave it running 24/7. This is where Wake-on-LAN (WOL) became the perfect solution, allowing me to remotely power on my PC and SSH into it from anywhere. So here is how you can do it too
+For lot of the projects I do I need a dedicated Linux environment to use tools like `perf`. But personally daily driving Ubuntu is not really suitable for me and I enjoy using my M1 Mac too much xd. I wanted a way to wake up my Linux machine when I wasn't home, as I didn't want to leave it running 24/7. This is where I came across Wake-on-LAN (WOL), which allowed me to remotely power on my PC and SSH into it from anywhere. Here is a little guide.
+ 
 ## Enable Wake-on-LAN in the BIOS 
 
 The first and most fundamental step is to enable WOL in your motherboard's BIOS/UEFI settings. The exact location of this setting can vary, but you'll typically find it under a menu like "Power Management," "Advanced," or "PME (Power Management Events)." Look for an option like **"Wake on LAN," "Wake on PCI-E,"** or similar and enable it.
@@ -142,17 +143,17 @@ Now that your PC is configured, you need a way to send the magic packet. I use a
 
 
 ##  WoWww (Wake-on-Wan)
-Waking your PC from outside your local network (WAN) is a bit trickier. Directly port-forwarding the WOL packet from your router to your PC often didn't work for me. This is because WOL packets are a broadcast protocol, and routers typically don't allow broadcast traffic to be forwarded from the public internet for security reasons.
+Waking your PC from outside your local network (WAN) is a bit trickier. Directly port-forwarding the WOL packet from your router to your PC often didn't work for me. This is because WOL packets are a broadcast protocol, and routers typically don't allow broadcast traffic to be forwarded from the public internet for security reasons. Here is a [reddit post](https://www.reddit.com/r/HomeServer/comments/10cl7sd/comment/j4gvsr5/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) on it.
 
 My solution for this is to use a low-power device that's always on, such as an old Raspberry Pi or a mini PC like a NUC.
 
 1. I have a NUC that's always on and acts as a server.
     
-2. From my MacBook, I establish a secure SSH connection to the NUC.
+2. From my MacBook, I can SSH into the NUC.
     
-3. Once connected, I run the `wol` command (for Linux) from the NUC, which is on the same local network as my main PC. The magic packet is sent locally, and my main PC wakes up.
+3. Once connected, I run the `wol` command (for Linux) from the NUC, which is on the same local network as my main PC. The magic packet is sent locally, anddd magically Wake-on-Wan.
     
 
-I think this is this is the most secure method that avoids exposing your network to potential security risks. While there may be other workarounds, this is a very common and effective approach
+I think this is this is the most secure method that avoids exposing your network to potential security risks. While there may be other workarounds, this is a very common and effective approach.
 
 Hope this helped!
