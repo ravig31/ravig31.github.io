@@ -1,0 +1,4 @@
+---
+title: Learning what dev containers are for the first time
+---
+Contributing to my first open source project [cudf](https://github.com/rapidsai/cudf) came across a prompt from vscode to reopen the session in a dev container. Ignored this at first thought it was nothing important. Turns out dev containers are pretty cool, I really like how they also install and configure the right vscode extensions as well. I think that going forward, especially on a big project like this, its reassuring to know that I'm working in a isolated environment similar to other developers. This way it's less likely that an error is due to  a dependency issue from my setup. Although it is pretty annoying have to install compilers and other tools again on the container but other than that pretty neat.
