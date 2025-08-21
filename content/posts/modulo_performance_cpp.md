@@ -45,7 +45,7 @@ As you can see there is `idiv` instruction to perform the modulo operation, and 
 
 **Using Modulo with `constexpr` Divisor**
 
-With modern compilers when you define the divisor as a constant it can apply some key optimisations. Particularly, if the divisor is known ahead of time you can replace the operation with other cheaper operations which have the same effect.
+With modern compilers, when you define the divisor as a constant it can apply some key optimisations. Particularly, if the divisor is known ahead of time you can replace the operation with other cheaper operations which have the same effect.
 
 This sequence is much faster than an actual hardware division. This is what the same `x86` code looks like with `MOD` as a `constexpr`
 
@@ -91,4 +91,10 @@ jle .L4
 sub DWORD PTR [rbp-4], 1000000007
 ```
 
-As you can it's just doing a compare and subtract, which very cheap for the cpu. This yields a time of `0.31s` on the large test cases, an smaller improvement from `>1.0s` to `0.5s` but an improvement nonetheless!
+As you can it's just doing a compare and subtract, which very cheap for the cpu. This yields a time of `0.31s` on the large test cases, a smaller improvement from `>1.0s` to `0.5s` but an improvement nonetheless!
+
+**A good rule of thumb**
+- Avoid `%` in tight loops unless the divisor is a **power of two** (in which case compilers optimise `%` into a cheap bitmask).
+- For arbitrary constants (like `1e9+7`), use conditional subtract or precomputed tricks.
+
+Thanks for reading :)) `-ravi`
