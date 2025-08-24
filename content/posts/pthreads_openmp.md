@@ -1,5 +1,5 @@
 ---
-title: " pthreads vs OpenMP and intro to multi-threading"
+title: Intro to multi-threading + pthreads vs OpenMP
 ---
 ## What is a thread?
 Is essentially a lightweight unit of execution **within a process** that is given a sequence of instructions, its own registers, stack and program counter.
