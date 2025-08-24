@@ -18,7 +18,7 @@ Well it really depends on the nature of the task and what your bottleneck is and
 like for example your trying to find all the prime numbers between 0 and n
 - This is a CPU-intensive task and the bottleneck is the core itself
 - Adding threads up to the amount of cores available in your machine (and splitting work accordingly) means that the work can be run in parallel up to that many cores
-- Additional threads above this usually doesn't help as the work cannot be parallelised further and just adds to overhead
+- Additional threads above this usually doesn't help as the **work cannot be parallelised further** and just adds to overhead
 #### I/O Bound (Concurrency)
 When your task is heavily dependent on I/O, say a web server, having more threads than CPU cores is beneficial as it enables concurrency. This is ensures that the time the CPU is spent idling is a minimum.
 
@@ -30,7 +30,7 @@ When your task is heavily dependent on I/O, say a web server, having more thread
 ** In practise this is not very scalable so modern web-servers use **asynchronous I/O**, where instead of creating a thread per request, the same thread can do other work while also performing I/O in a **non-blocking manner**.
 
 ### What is the speed-up? (Amdahl's Law)
-When parallelising you task amongst multiple cores the speed up is **bound by the portion of serial work**. [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl%27s_law) demonstrates this with this formula for the expected speedup of parallelising a computational task
+When parallelising you task amongst multiple cores the speed up is **bound by the portion of serial work**. [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl%27s_law) demonstrates this with this formula, for the expected speedup of parallelising a computational task
 
 $$Speedup(N)=\frac{1}{(1−P)+\frac{N}{p}}$$
 Where:
@@ -87,30 +87,34 @@ std::vector<bool> printPrimesToNParalell(int n, int threads) {
 }
 ```
 
-Essentially, the algorithm first computes the primes up to $\sqrt n$ (line 6) and then, in parallel, marks the multiples of those prime numbers that are **above $\sqrt n$** as composite in a boolean array, where then we know which numbers are prime. 
+Essentially, the algorithm first computes the primes up to $\sqrt n$ (line 6) and then, in parallel, marks the multiples of those prime numbers that are **above $\sqrt n$** as composite in a boolean array, where then we know which numbers are not composite. 
 
-I parallelised the work by splitting the range of`[2..n]` into chunks, where each of the 8 threads in my machine was assigned it own to handle marking that specific section. Since each threads operates in its own boundary within the boolean array there is no synchronisation required.
+I parallelised the work by splitting the range of`[2..n]`into chunks, with each of the 8 threads in my machine assigned to it's own piece. The threads would then mark the multiples in its own respective section. Since each thread operates in its own boundary, within the boolean array, there is no synchronisation required.
 
-For this somewhat simple implementation, working with pthreads wasn't to difficult, and I managed to get a around a 3x speedup. I think this is indicative of the portion of serial tasks within the program and the uneven workload amongst the range of `[2...n]`, where each thread wasn't handling a similarly intensive task.
+For this, somewhat simple, implementation, working with pthreads wasn't too difficult, and I managed to get around a 3x speedup. I think this figure is indicative of the portion of serial tasks within the program and the uneven workload amongst the range of `[2...n]`, where each thread isn't handling a similarly intensive task.
 
-### OpenMP
- a higher-level abstraction, through compiler directives, that makes creating and managing threads easier. It hides the details of thread management, while still letting you influence scheduling and synchronisation.
+## OpenMP
+ Is a higher-level abstraction, through compiler directives, that makes creating and managing threads easier. It hides the details of thread management, while still letting you influence scheduling and synchronisation.
 
-You basically tell the compiler "what to do", and OpenMP decides "how" it will parallelise the computation. As opposed to the pthreads implementation above, OpenMP provides some additional options for how the program should distribute and schedule work amongst threads. The pthreads range split approach above **assumes work is equal** in each chunk, implementing measures to account for uneven work would require additional complexity  
+You basically tell the compiler "what to do", and OpenMP decides "how" it will parallelise the computation. As opposed to the pthreads implementation above, OpenMP provides some additional options for how the program should distribute and schedule work amongst threads. The pthreads range split approach above **assumes work is equal** in each chunk and implementing measures to account for uneven work would require additional complexity  
 
 With OpenMP this a little more simple, allowing you to guide how work should be distributed and scheduled with just simple compiler directives:
 - `static[,chunk]`: round-robin fixed chunks (low overhead; best for uniform work, same as pthreads range-split). 
 - `dynamic[,chunk]`: threads pull next chunk when done (good for irregular work).
 - `guided[,chunk]`: large chunks first, shrinking over time (compromise between overhead & balance).
 ### What does the chunk in `[,chunk]` mean?
-**`, chunk`** is an **optional integer** that tells the runtime how many loop iterations to hand to a thread at a time
+`chunk` is an **optional integer** that tells the runtime how many loop iterations to hand to a thread at a time
 
-**Small Chunks:**
+**Small Chunks**
 - Good when work is **unbalanced**
 - A single thread is not left doing a **large portion** that is intensive while other threads idle
 - Better load balancing, but also **more overhead**
+**Large Chunks**
+- Per-iteration cost is **uniform** (or the heavy work is evenly scattered so averages out).
+	- i.e. all threads finish around the same time (one is not idling)
+- Useful when scheduling overhead dominates (with small chunks) and you need **contiguous** blocks for cache locality.
 
-For the task of computing primes up to n, using a smaller chunk value helped as the work tended to be more intensive in the upper end up of n. Heres the code...
+For this task of computing primes up to n, using a smaller chunk value helped as the work tended to be more intensive in the upper end up of n. Heres the code...
 
 ```c++
 std::vector<bool> printPrimesToOpenMP(int n, int threads) {
@@ -152,37 +156,36 @@ The work is split up into 80 different segments and the dynamic scheduler assign
 
 **Performance vs pthreads**
 
-With some non-extensive benchmarking the OpenMP implementation yielded: 
+With some non-extensive benchmarking, the OpenMP implementation yielded: 
 
 ```zsh
--> % ./task3.o
+-> % ./openmp_primes.o
 Enter a value for n: 100000000
 Time taken: 0.128826seconds
 ```
 while the pthread implementation was slightly slower:
 ``` zsh
--> % ./task2.o
+-> % ./pthread_primes.o
 Enter a value for n: 100000000
 Time taken: 0.134285seconds
 ```
 
-My assumption would be that this is mostly due to the dynamic distribution of work being more optimal for this particular task.
+My assumption would be that this is mostly due to the dynamic distribution of work (with OpenMP) being more optimal for this particular task.
 
-#### OpenMP `private` and `shared` keywords
-
-In addition, OpenMP provides two keywords for specifying how data should be shared amongst threads. These control whether threads see one common instance or their own copy
+#### Extra: OpenMP `private` and `shared` keywords
+OpenMP provides two keywords for specifying how data should be shared amongst threads. These control whether threads see one common instance or their own copy
 - **`shared(varlist)`**
     - All threads refer to the **same single instance**.
-    - Reads/writes must be synchronised (e.g., atomics, critical) to avoid races.
+    - Reads/writes must be synchronised to avoid races.
 - **`private(varlist)`**
     - Each thread gets its **own uninitialised copy**.
-    - The original value is **not** copied in; on exit, the private value is **discarded**.
+    - The original value is **not** copied in and on exit the private value is **discarded**.
 
 In my code this is not explicitly specified and is left to OpenMP to configure. By default...
 - Variables **declared inside** the parallel region are **private** to that region.
-- Variables **visible from outside** (locals in the enclosing scope, globals/statics) are typically **shared** .
+- Variables **visible from outside** (locals in the enclosing scope, globals/statics) are typically **shared**.
 
-### Summary
-This is was a quick introduction into multi-threading and parallel computation, going over two common frameworks which enable this kind of work. This is only a foundation for me at the moment, to get a grasp what parallel computation is and how it is done at a high level. Hope you enjoyed and learned something :)
+## Summary
+This is was a quick introduction into multi-threading and parallel computation, going over two common frameworks which enable this kind of work. This is only a foundation for me at the moment, to get a grasp what parallel computation is and how it is done at a high level. Hope you enjoyed and learned something like me :)
 
 `- ravi`
