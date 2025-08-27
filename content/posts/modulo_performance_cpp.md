@@ -1,5 +1,6 @@
 ---
 title: Performance of using modulo
+tags: [low-level, comparch]
 ---
 Was working on this [problem](https://cses.fi/problemset/result/14221206/) that required repeated modulo operations on an answer with a constant ($10^9+7$). The algorithm was already as efficient as it could be however the large test cases were failing and I was unsure why. Initially tried tweaking the algorithm for early exit conditions, path pruning, sorted input etc. However, none of this worked so after doing little bit of research i found out it was due to the repeated modulo operation within the code. 
 

@@ -156,4 +156,6 @@ My solution for this is to use a low-power device that's always on, such as an o
 
 I think this is this is the most secure method that avoids exposing your network to potential security risks. While there may be other workarounds, this is a very common and effective approach.
 
-Hope this helped!
+Hope this helped! 
+
+`- ravi`
