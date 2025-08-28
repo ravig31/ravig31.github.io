@@ -33,7 +33,7 @@ When your task is heavily dependent on I/O, say a web server, having more thread
 ### What is the speed-up? (Amdahl's Law)
 When parallelising you task amongst multiple cores the speed up is **bound by the portion of serial work**. [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl%27s_law) demonstrates this with this formula, for the expected speedup of parallelising a computational task
 
-$$Speedup(N)=\frac{1}{(1−P)+\frac{N}{p}}$$
+$$Speedup(N)=\frac{1}{(1−P)+\frac{P}{N}}$$
 Where:
 - $P$ = fraction of code that can be parallelised.
 - $N$ = number of threads/cores.
