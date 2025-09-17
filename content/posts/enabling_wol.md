@@ -1,5 +1,8 @@
 ---
 title: Enabling Wake-on-Lan (and WAN) on Ubuntu 24.04
+tags:
+  - comparch
+  - linux
 ---
 
 For lot of the projects I do I need a dedicated Linux environment to use tools like `perf`. But personally daily driving Ubuntu is not really suitable for me and I enjoy using my M1 Mac too much xd. I wanted a way to wake up my Linux machine when I wasn't home, as I didn't want to leave it running 24/7. This is where I came across Wake-on-LAN (WOL), which allowed me to remotely power on my PC and SSH into it from anywhere. Here is a little guide.
