@@ -12,9 +12,7 @@ tags:
 
 The **time speedup** achieved by such system, running on $N$ processors, can be modelled by
 $$
-\begin{flalign}
 S=\frac{1}{(1-p)+\frac{p}{N}}
-\end{flalign}
 $$
 ### Gustafson's Law
 Basically says that, when we have a large parallel system the amount of work we can actually do increases. In essence, parallel machines do not just speed up exisiting problems but enable us to do bigger ones.
